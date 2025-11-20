@@ -12,7 +12,7 @@ El corazón del modelo reside en la cuantificación del costo estructural (la "C
 
 1. El Doble Costo de la Burocracia (2G)
 
-El gasto consuntivo del Estado no cuesta 1, sino 2 a la economía productiva. Este coeficiente 2 penaliza el Gasto Consumo (G}_cons), reflejando el costo directo más el irrecuperable Costo de Oportunidad del capital desviado de la inversión privada productiva.
+El gasto consuntivo del Estado no cuesta 1, sino 2 a la economía productiva. Este coeficiente 2 penaliza el Gasto Consumo (G_cons), reflejando el costo directo más el irrecuperable Costo de Oportunidad del capital desviado de la inversión privada productiva.
 
 TPL= (2G_cons) + G_trans + G_inv
 
