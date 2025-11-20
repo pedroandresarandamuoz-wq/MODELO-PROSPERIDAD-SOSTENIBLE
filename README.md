@@ -48,5 +48,3 @@ La corrección del PIB nominal en términos de solvencia real. (VNA = PIB * (PSA
 
 El archivo datasetmps.csv contiene los datos de todos los paises.
 
-
-El archivo modelo_ps_datos_final.csv contiene el dataset completo auditado de 195 naciones. El punto (.) es el separador decimal estándar.
