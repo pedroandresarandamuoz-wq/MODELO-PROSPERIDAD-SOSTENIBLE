@@ -10,51 +10,39 @@ El modelo refuta el Producto Interno Bruto (PIB) al introducir la Carga Parasita
 
 El corazón del modelo reside en la cuantificación del costo estructural (la "Casta" o el "Parásito") a través de dos axiomas verificables:
 
-1. El Doble Costo de la Burocracia ($2G$)
+1. El Doble Costo de la Burocracia (2G)
 
-El gasto consuntivo del Estado no cuesta 1, sino 2 a la economía productiva. Este coeficiente $2\times$ penaliza el Gasto Consumo ($\mathbf{G}_{\text{cons}}$), reflejando el costo directo más el irrecuperable Costo de Oportunidad del capital desviado de la inversión privada productiva.
+El gasto consuntivo del Estado no cuesta 1, sino 2 a la economía productiva. Este coeficiente 2 penaliza el Gasto Consumo (G}_cons), reflejando el costo directo más el irrecuperable Costo de Oportunidad del capital desviado de la inversión privada productiva.
 
-$$\mathbf{TPL}_{\text{Gasto}} = (2 \times \mathbf{G}_{\text{cons}}) + \mathbf{G}_{\text{trans}}$$
+TPL= (2G_cons) + G_trans + G_inv
 
-2. La Carga Oculta ($\mathbf{C}_{\_}\mathbf{H}$)
+2. La Carga Oculta C_H
 
 Mide la destrucción de valor causada por la ineficiencia institucional. Se calcula como el promedio simple de cinco proxies de fricción: Corrupción, Jurídica, Regulación, SOE y Fricción Fiscal.
 
-$$\mathbf{C}_{\_}\mathbf{H} = \text{PROMEDIO}(\text{Costo}_{\text{corr}}, \text{Costo}_{\text{jur}}, \text{Costo}_{\text{reg}}, \text{Costo}_{\text{soe}}, \mathbf{C}_{\text{Fiscal}})$$
+C_H = PROMEDIO (C_corr, C_jur, C_reg, C_soe, C_Fiscal)
 
 📐 MÉTRICAS DE SOLVENCIA FINAL (La PSA)
 
-La Prosperidad Sostenible Ajustada ($\mathbf{PSA}$) es el indicador de solvencia real, ya que aplica la penalización por la destrucción fiduciaria (Inflación).
-
-Columna
-
-Métrica
+La Prosperidad Sostenible Ajustada (PSA) es el indicador de solvencia real, ya que aplica la penalización por la destrucción fiduciaria (Inflación).
 
 Fórmula / Veredicto
 
-P_N
+P_N Prosperidad Neta
 
-Prosperidad Neta
+Tasa de riqueza acumulada (Interna). (P_N = 100% - TPL)
 
-Tasa de riqueza acumulada (Interna). ($\mathbf{P}_{\mathbf{N}} = 100\% - \mathbf{TPL}$)
+PSA Prosperidad Sostenible Ajustada
 
-PSA
+Solvencia Real y Final. P_N penalizada por la Inflación. PSA = P_N - Inflación)
 
-Prosperidad Sostenible Ajustada
+RHI (Años) Riesgo de Hipoteca Intergeneracional
 
-Solvencia Real y Final. $\mathbf{P}_{\mathbf{N}}$ penalizada por la Inflación. ($\mathbf{PSA} = \mathbf{P}_{\mathbf{N}} - \text{Inflación}$)
+El veredicto final. Mide en años cuánto se tarda en pagar la deuda (D_P) con la PSA actual. Si PSA < 0, el veredicto es IMPOSIBLE.
 
-RHI (Años)
+VNA (MM Dolar) Valor Neto Anual
 
-Riesgo de Hipoteca Intergeneracional
-
-El veredicto final. Mide en años cuánto se tarda en pagar la deuda ($\mathbf{D}_{\mathbf{P}}$) con la $\mathbf{PSA}$ actual. Si $\mathbf{PSA} < 0$, el veredicto es IMPOSIBLE.
-
-VNA (MM Dolar)
-
-Valor Neto Anual
-
-La corrección del PIB nominal en términos de solvencia real. ($VNA = PIB \times PSA$)
+La corrección del PIB nominal en términos de solvencia real. (VNA = PIB * (PSA/100)
 
 📁 DATOS
 
