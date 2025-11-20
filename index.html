@@ -50,7 +50,7 @@
                 <!-- El contenido de la tabla se insertará aquí -->
                 <div class="text-indigo-500 font-medium">Cargando datos...</div>
             </div>
-            <div id="error-message" class="hidden mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <div id="error-message" class="hidden mt-4 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
                 <strong class="font-bold">Advertencia de Datos:</strong>
                 <span id="error-text" class="block sm:inline"></span>
             </div>
@@ -63,21 +63,31 @@
     </footer>
 
     <script>
-        // *** CONFIGURACIÓN CRÍTICA PARA GITHUB PAGES: USAR NOMBRE DE ARCHIVO SIMPLE ***
-        const DATA_FILE = 'datasetmps.csv'; 
+        // *** CONFIGURACIÓN CRÍTICA PARA GITHUB PAGES ***
+        // Usamos el archivo corregido para evitar el error de campos faltantes.
+        const DATA_FILE = 'datasetmps_corregido.csv'; 
         const dataContainer = document.getElementById('data-container');
         const summaryMetrics = document.getElementById('summary-metrics');
         const errorMessageDiv = document.getElementById('error-message');
         const errorText = document.getElementById('error-text');
         
-        // Función para mostrar mensajes de error/advertencia
+        // CORRECCIÓN DEL BUG: Usar clases individuales con classList.remove
         const showAlert = (title, message, isError = true) => {
             console.warn(`[${isError ? 'ERROR' : 'ADVERTENCIA'}] ${title}:`, message);
             document.querySelector('#error-message strong').textContent = isError ? 'Error de Carga:' : 'Advertencia de Datos:';
             errorText.textContent = message;
             errorMessageDiv.classList.remove('hidden');
-            errorMessageDiv.classList.remove(isError ? 'bg-yellow-100 border-yellow-400 text-yellow-700' : 'bg-red-100 border-red-400 text-red-700');
-            errorMessageDiv.classList.add(isError ? 'bg-red-100 border-red-400 text-red-700' : 'bg-yellow-100 border-yellow-400 text-yellow-700');
+            
+            // Limpiar ambas combinaciones de color
+            errorMessageDiv.classList.remove('bg-yellow-100', 'border-yellow-400', 'text-yellow-700');
+            errorMessageDiv.classList.remove('bg-red-100', 'border-red-400', 'text-red-700');
+            
+            // Aplicar el color correcto
+            if (isError) {
+                errorMessageDiv.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            } else {
+                errorMessageDiv.classList.add('bg-yellow-100', 'border-yellow-400', 'text-yellow-700');
+            }
         };
 
         // Función de utilidad para limpiar y convertir valores numéricos del CSV
@@ -114,7 +124,7 @@
             }
 
             const headers = meta.fields || Object.keys(data[0]);
-            const expectedFieldCount = headers.length;
+            const expectedFieldCount = meta.fields ? meta.fields.length : Object.keys(data[0]).length;
             
             // FILTRAR filas defectuosas que causan el error "Too few fields"
             let validData = data.filter(row => Object.keys(row).length === expectedFieldCount);
@@ -122,8 +132,8 @@
 
             if (droppedRowCount > 0) {
                 showAlert('Advertencia de Datos', 
-                    `Se ignoraron ${droppedRowCount} filas debido a un formato incorrecto (tenían ${expectedFieldCount - 1} campos en lugar de ${expectedFieldCount}). Por favor, revise el CSV.`, 
-                    false); // No es un error crítico, es una advertencia
+                    `Se ignoraron ${droppedRowCount} de ${data.length} filas debido a un formato incorrecto (es probable que falte un campo o un separador en esas filas). La visualización de la data válida continúa.`, 
+                    false); // Advertencia
             }
 
             if (validData.length === 0) {
@@ -134,7 +144,6 @@
             // 1. Renderizar la tabla
             const tableHeaders = headers.map(header => `<th scope="col" class="py-3.5 px-3 text-sm font-semibold uppercase tracking-wider">${header}</th>`).join('');
             const tableRows = validData.map(row => {
-                // Generar filas solo con los encabezados esperados para evitar errores
                 return `
                     <tr class="hover:bg-indigo-50 transition duration-150">
                         ${headers.map(header => `<td class="whitespace-nowrap text-sm text-gray-700">${formatValue(row[header], header)}</td>`).join('')}
@@ -154,7 +163,7 @@
             // 2. Calcular y renderizar métricas de resumen
             const scoreKey = 'C_H (Índice)';
             const impactKey = 'PIB nominal (MM Dolar)';
-            const prosperityKey = 'PS (Sostenible)'; // Se asume que este es el resultado final
+            const prosperityKey = 'PS (Sostenible)'; 
 
             // C_H (Índice) Promedio
             const globalScores = validData.map(row => parseNumber(row[scoreKey])).filter(n => !isNaN(n));
@@ -207,19 +216,26 @@
                         header: true,
                         dynamicTyping: false, 
                         skipEmptyLines: true,
-                        // Permitimos que el parsing continúe incluso si encuentra filas malformadas
                         error: function(error, file, input) {
-                            // Esto captura el error, pero no detiene el proceso si no es crítico.
                             console.error("PapaParse Error:", error);
                         },
                         complete: function(results) {
-                            // Si hay errores críticos de parsing que resultaron en datos vacíos:
-                            if (!results.data || results.data.length === 0) {
-                                showAlert('Error Crítico', `No se pudieron obtener datos. Revise que el archivo ${DATA_FILE} no esté vacío.`, true);
-                            } else {
-                                // Llamamos a renderData, que ahora tiene la lógica de filtrado de filas
-                                renderData(results.data, results.meta);
+                            // 1. Manejar Errores de PapaParse (como "Too few fields")
+                            if (results.errors.length) {
+                                // Mostramos el error como advertencia.
+                                showAlert('Error de CSV detectado', 
+                                    `PapaParse encontró ${results.errors.length} errores, incluyendo: "${results.errors[0].message}". Esto sucede cuando faltan campos o separadores en algunas filas. Se intentará cargar la data válida.`, 
+                                    false); 
                             }
+                            
+                            // 2. Si no hay datos después del parseo, es un error crítico.
+                            if (!results.data || results.data.length === 0) {
+                                showAlert('Error Crítico', `No se pudieron obtener datos. Revise que el archivo ${DATA_FILE} no esté vacío y no tenga errores graves.`, true);
+                                return;
+                            }
+                            
+                            // 3. Llamamos a renderData, que filtrará las filas malformadas
+                            renderData(results.data, results.meta);
                         }
                     });
                 })
@@ -232,4 +248,5 @@
         window.onload = loadData;
     </script>
 </body>
+</html>
 </html>
