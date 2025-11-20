@@ -70,7 +70,7 @@
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <script>
         // Nombre del archivo CSV subido a GitHub Pages
-        const DATA_FILE = 'datasetmps_corregido.csv';
+        const DATA_FILE = 'datasetmps_corregido.csv'; 
 
         // Constantes de estilo de alerta
         const ALERT_ERROR_CLASSES = 'bg-red-100 border-red-400 text-red-700';
@@ -85,6 +85,7 @@
          */
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
+            // La corrección es quitar las clases de estilo una por una
             alertContainer.classList.remove(...ALERT_ERROR_CLASSES.split(' '), ...ALERT_WARNING_CLASSES.split(' '), ...ALERT_SUCCESS_CLASSES.split(' '));
             
             let classes;
@@ -107,13 +108,13 @@
         }
 
         /**
-         * Limpia un valor numérico para permitir operaciones (maneja comas como decimales).
+         * Limpia un valor numérico para permitir operaciones (maneja coma ',' como decimal).
          * @param {string} value - Valor de texto con posible separador decimal de coma.
          * @returns {number} Valor numérico.
          */
         function cleanNumber(value) {
             if (typeof value !== 'string') return 0;
-            // Reemplaza la coma por punto (formato decimal) y elimina separadores de miles (puntos)
+            // Reemplaza el punto por nada (separador de miles) y la coma por punto (decimal)
             const cleaned = value.trim().replace(/\./g, '').replace(/,/g, '.');
             const parsed = parseFloat(cleaned);
             return isNaN(parsed) ? 0 : parsed;
@@ -133,18 +134,19 @@
             let sum_pib = 0;
             let sum_ps = 0;
             
-            // Obtener el nombre de la columna para Prosperidad Sostenible (se asume que es la 23/index 22, pero se usa 'PS (Sostenible)')
+            // Nombres de columna (basados en datasetmps_corregido.csv)
             const psColumnName = 'PS (Sostenible)';
             const chColumnName = 'C_H (Índice)';
             const pibColumnName = 'PIB nominal (MM Dolar)';
 
             data.forEach(row => {
-                const keys = Object.keys(row);
+                const keys = Object.keys(row).filter(k => k !== ''); 
+                
                 // Validación estricta: si el número de campos no es el esperado, descartar la fila
                 if (keys.length === EXPECTED_FIELDS_COUNT) {
                     validData.push(row);
                     
-                    // Suma de métricas clave (ajustado a los nombres de columna del CSV)
+                    // Suma de métricas clave 
                     sum_ch += cleanNumber(row[chColumnName]);
                     sum_pib += cleanNumber(row[pibColumnName]);
                     sum_ps += cleanNumber(row[psColumnName]);
@@ -154,20 +156,23 @@
             // 2. Mostrar advertencia si se descartaron filas
             const discardedRows = data.length - validData.length;
             if (discardedRows > 0) {
-                showAlert(`ADVERTENCIA: Se descartaron ${discardedRows} fila(s) debido a datos incompletos (esperado ${EXPECTED_FIELDS_COUNT} campos, pero se encontraron menos). Por favor, corrija el archivo CSV.`, 'warning');
+                showAlert(`ADVERTENCIA: Se descartaron ${discardedRows} fila(s) debido a datos incompletos (esperado ${EXPECTED_FIELDS_COUNT} campos). Corrija el CSV o revise los campos vacíos al final de las líneas.`, 'warning');
             } else {
                 showAlert(`Carga exitosa. Se analizaron ${data.length} filas con ${EXPECTED_FIELDS_COUNT} columnas cada una.`, 'success');
             }
 
             // 3. Renderizar Métricas Clave
             const count = validData.length;
-            document.getElementById('avg_ch').textContent = (count > 0 ? (sum_ch / count).toFixed(2) : 'N/A');
-            document.getElementById('sum_pib').textContent = (sum_pib > 0 ? sum_pib.toFixed(2).replace(/\./g, ',') + 'M' : 'N/A');
-            document.getElementById('avg_ps').textContent = (count > 0 ? (sum_ps / count).toFixed(2) : 'N/A');
+            // Función para formatear el número de vuelta a formato regional (coma decimal, punto separador de miles)
+            const formatNumber = (num) => num.toFixed(2).replace('.', 'TEMP').replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace('TEMP', ',');
+
+            document.getElementById('avg_ch').textContent = (count > 0 ? formatNumber(sum_ch / count) : 'N/A');
+            document.getElementById('sum_pib').textContent = (sum_pib > 0 ? formatNumber(sum_pib) + 'M' : 'N/A');
+            document.getElementById('avg_ps').textContent = (count > 0 ? formatNumber(sum_ps / count) : 'N/A');
 
             // 4. Renderizar Tabla
             if (validData.length === 0) {
-                dataTable.innerHTML = '<p class="p-4 text-red-700">No se pudieron cargar datos válidos. Revise el formato y el delimitador del archivo CSV.</p>';
+                dataTable.innerHTML = '<p class="p-4 text-red-700">No se pudieron cargar datos válidos. El CSV puede estar mal formateado (delimitador o número de columnas). Revise que su CSV use punto y coma (;) como separador de campos.</p>';
                 return;
             }
 
@@ -200,7 +205,7 @@
             Papa.parse(DATA_FILE, {
                 download: true,
                 header: true,
-                delimiter: ';', // USANDO PUNTO Y COMA COMO DELIMITADOR (SOLUCIÓN REGIONAL)
+                delimiter: ';', // FIJADO A PUNTO Y COMA
                 dynamicTyping: false,
                 skipEmptyLines: true,
                 error: function(err, file) {
@@ -209,10 +214,10 @@
                 },
                 complete: function(results) {
                     if (results.errors.length > 0) {
-                        // Este error se dispara si el formato del CSV está mal (e.g., Too few fields)
                         const firstError = results.errors[0];
                         const errorMessage = `Error al analizar el CSV: ${firstError.message}.`;
-                        showAlert(`Error de Carga: ${errorMessage} Revise el formato de su CSV y asegúrese de que tiene ${EXPECTED_FIELDS_COUNT} columnas.`, 'error');
+                        // Se muestra el error específico de parsing
+                        showAlert(`Error de Carga: ${errorMessage} El CSV tiene un problema de formato (delimitador o número de columnas).`, 'error');
                         document.getElementById('dataTable').innerHTML = `<p class="p-4 text-red-700">${errorMessage}</p>`;
                         return;
                     }
