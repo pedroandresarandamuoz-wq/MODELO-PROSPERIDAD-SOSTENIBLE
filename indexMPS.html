@@ -59,9 +59,8 @@
 
     <script>
         // Declaración de constantes
-        // Se utiliza el ID de contenido del archivo subido ('uploaded:datasetmps.csv') en lugar del nombre del archivo
-        // Esto soluciona el error de "Failed to parse URL" en el entorno de ejecución.
-        const DATA_FILE = 'uploaded:datasetmps.csv'; 
+        // *** CAMBIO CRÍTICO PARA GITHUB PAGES: Se usa el nombre de archivo directo ***
+        const DATA_FILE = 'datasetmps.csv'; 
         const dataContainer = document.getElementById('data-container');
         const summaryMetrics = document.getElementById('summary-metrics');
         const errorMessageDiv = document.getElementById('error-message');
@@ -175,7 +174,8 @@
                 .then(response => {
                     if (!response.ok) {
                         // Si falla la carga, mostramos el error de manera clara.
-                        throw new Error(`No se pudo acceder al archivo. Código de estado: ${response.status}.`);
+                        // En un servidor real, un error 404 aquí significa que el CSV no está en la ubicación correcta.
+                        throw new Error(`No se pudo acceder al archivo. Código de estado: ${response.status}. Asegúrese de que 'datasetmps.csv' está en la misma carpeta que 'index.html'.`);
                     }
                     return response.text();
                 })
