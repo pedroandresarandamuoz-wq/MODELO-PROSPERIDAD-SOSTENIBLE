@@ -70,7 +70,7 @@
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <script>
         // Nombre del archivo CSV subido a GitHub Pages
-        const DATA_FILE = 'datasetmps_corregido.csv'; 
+        const DATA_FILE = 'datasetmps.csv'; // USANDO EL NOMBRE SIMPLE
 
         // Constantes de estilo de alerta
         const ALERT_ERROR_CLASSES = 'bg-red-100 border-red-400 text-red-700';
@@ -80,8 +80,6 @@
 
         /**
          * Muestra una alerta en la parte superior de la página.
-         * @param {string} message - Mensaje a mostrar.
-         * @param {string} type - Tipo de alerta ('error', 'warning', 'success').
          */
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
@@ -108,22 +106,20 @@
         }
 
         /**
-         * Limpia un valor numérico para permitir operaciones (maneja coma ',' como decimal).
-         * @param {string} value - Valor de texto con posible separador decimal de coma.
+         * Limpia un valor numérico para permitir operaciones (espera punto '.' como decimal).
+         * @param {string} value - Valor de texto.
          * @returns {number} Valor numérico.
          */
         function cleanNumber(value) {
             if (typeof value !== 'string') return 0;
-            // Reemplaza el punto por nada (separador de miles) y la coma por punto (decimal)
-            const cleaned = value.trim().replace(/\./g, '').replace(/,/g, '.');
+            // Estandariza a formato internacional (solo punto decimal)
+            const cleaned = value.trim().replace(/,/g, ''); // Elimina comas (si se usaron como separadores de miles)
             const parsed = parseFloat(cleaned);
             return isNaN(parsed) ? 0 : parsed;
         }
 
         /**
          * Renderiza la tabla de datos y calcula las métricas clave.
-         * @param {Array<Object>} data - Datos CSV parseados.
-         * @param {Array<string>} meta - Metadata del parseo.
          */
         function renderData(data, meta) {
             const dataTable = document.getElementById('dataTable');
@@ -134,7 +130,7 @@
             let sum_pib = 0;
             let sum_ps = 0;
             
-            // Nombres de columna (basados en datasetmps_corregido.csv)
+            // Nombres de columna (basados en el CSV de 28 columnas)
             const psColumnName = 'PS (Sostenible)';
             const chColumnName = 'C_H (Índice)';
             const pibColumnName = 'PIB nominal (MM Dolar)';
@@ -142,7 +138,7 @@
             data.forEach(row => {
                 const keys = Object.keys(row).filter(k => k !== ''); 
                 
-                // Validación estricta: si el número de campos no es el esperado, descartar la fila
+                // Validación estricta
                 if (keys.length === EXPECTED_FIELDS_COUNT) {
                     validData.push(row);
                     
@@ -156,7 +152,7 @@
             // 2. Mostrar advertencia si se descartaron filas
             const discardedRows = data.length - validData.length;
             if (discardedRows > 0) {
-                showAlert(`ADVERTENCIA: Se descartaron ${discardedRows} fila(s) debido a datos incompletos (esperado ${EXPECTED_FIELDS_COUNT} campos). Corrija el CSV o revise los campos vacíos al final de las líneas.`, 'warning');
+                showAlert(`ADVERTENCIA: Se descartaron ${discardedRows} fila(s) debido a datos incompletos. Se esperaban ${EXPECTED_FIELDS_COUNT} campos.`, 'warning');
             } else {
                 showAlert(`Carga exitosa. Se analizaron ${data.length} filas con ${EXPECTED_FIELDS_COUNT} columnas cada una.`, 'success');
             }
@@ -164,15 +160,18 @@
             // 3. Renderizar Métricas Clave
             const count = validData.length;
             // Función para formatear el número de vuelta a formato regional (coma decimal, punto separador de miles)
-            const formatNumber = (num) => num.toFixed(2).replace('.', 'TEMP').replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace('TEMP', ',');
+            const formatNumberRegional = (num) => {
+                if (isNaN(num) || num === null) return 'N/A';
+                return num.toFixed(2).replace('.', 'TEMP').replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace('TEMP', ',');
+            };
 
-            document.getElementById('avg_ch').textContent = (count > 0 ? formatNumber(sum_ch / count) : 'N/A');
-            document.getElementById('sum_pib').textContent = (sum_pib > 0 ? formatNumber(sum_pib) + 'M' : 'N/A');
-            document.getElementById('avg_ps').textContent = (count > 0 ? formatNumber(sum_ps / count) : 'N/A');
+            document.getElementById('avg_ch').textContent = (count > 0 ? formatNumberRegional(sum_ch / count) : 'N/A');
+            document.getElementById('sum_pib').textContent = (sum_pib > 0 ? formatNumberRegional(sum_pib) + 'M' : 'N/A');
+            document.getElementById('avg_ps').textContent = (count > 0 ? formatNumberRegional(sum_ps / count) : 'N/A');
 
             // 4. Renderizar Tabla
             if (validData.length === 0) {
-                dataTable.innerHTML = '<p class="p-4 text-red-700">No se pudieron cargar datos válidos. El CSV puede estar mal formateado (delimitador o número de columnas). Revise que su CSV use punto y coma (;) como separador de campos.</p>';
+                dataTable.innerHTML = `<p class="p-4 text-red-700">No se pudieron cargar datos válidos. Revise que su CSV (${DATA_FILE}) use la coma (,) como separador de campos y el punto (.) como decimal.</p>`;
                 return;
             }
 
@@ -205,7 +204,7 @@
             Papa.parse(DATA_FILE, {
                 download: true,
                 header: true,
-                delimiter: ';', // FIJADO A PUNTO Y COMA
+                delimiter: ',', // FIJADO A COMA INTERNACIONAL
                 dynamicTyping: false,
                 skipEmptyLines: true,
                 error: function(err, file) {
@@ -230,4 +229,4 @@
         window.onload = loadData;
     </script>
 </body>
-</html>
+</html>>
