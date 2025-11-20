@@ -4,249 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo de Prosperidad Sostenible (MPS)</title>
-    <!-- Incluir Tailwind CSS para un diseño moderno y responsivo -->
+    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fuente Inter (la fuente por defecto de Tailwind) -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb; /* Fondo claro */
+        /* Estilos personalizados para mejorar la visibilidad de la tabla */
+        .table-container {
+            overflow-x: auto; /* Permite desplazamiento horizontal en la tabla para móviles */
         }
-        /* Estilos base para la tabla */
-        .data-table th, .data-table td {
-            padding: 12px 16px;
-            text-align: left;
-        }
-        /* Estilo para hacer la tabla desplazable */
-        .data-container-scroll {
-            max-height: 70vh; /* Altura máxima para el scroll */
-            overflow-y: auto;
+        th, td {
+            min-width: 100px; /* Ancho mínimo para cada celda de la tabla */
+            padding: 10px;
         }
     </style>
-    <!-- Incluir PapaParse para cargar y analizar el archivo CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="p-4 sm:p-8">
+<body class="bg-gray-50 font-sans p-4 sm:p-8">
 
-    <div id="app" class="max-w-7xl mx-auto bg-white shadow-xl rounded-2xl p-6 md:p-10">
-
-        <!-- Encabezado del Modelo -->
+    <div class="max-w-7xl mx-auto bg-white shadow-xl rounded-xl p-6 sm:p-10">
+        
+        <!-- Encabezado y Título Principal -->
         <header class="mb-8 border-b pb-4">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Modelo de Prosperidad Sostenible (MPS)</h1>
-            <p class="text-lg text-gray-600">Visualización de Indicadores y Resultados Clave</p>
+            <h1 class="text-4xl font-extrabold text-blue-800 mb-2">
+                Modelo de Prosperidad Sostenible (MPS)
+            </h1>
+            <p class="text-xl text-gray-600">
+                Visualización de Indicadores y Resultados Clave
+            </p>
         </header>
 
-        <!-- Sección de Resumen y Métricas Clave -->
-        <section id="summary-metrics" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <!-- Las métricas de resumen se cargarán aquí -->
-            <div class="md:col-span-3 text-center text-gray-500">Cargando métricas...</div>
+        <!-- Contenedor de Alerta de Carga/Error -->
+        <div id="alertContainer" class="mb-6 p-4 rounded-lg text-sm hidden"></div>
+
+        <!-- Panel de Métricas Clave -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Métricas Clave (Promedio Global)</h2>
+            <div id="keyMetrics" class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <!-- Tarjeta de Métrica 1: Índice C_H -->
+                <div class="bg-blue-50 p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                    <p class="text-sm font-semibold text-blue-600 uppercase">C_H (Capacidad Humana) Promedio</p>
+                    <p id="avg_ch" class="text-3xl font-bold text-gray-900 mt-1">Cargando...</p>
+                </div>
+                <!-- Tarjeta de Métrica 2: PIB Nominal Total -->
+                <div class="bg-green-50 p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                    <p class="text-sm font-semibold text-green-600 uppercase">PIB Nominal Total (MM USD)</p>
+                    <p id="sum_pib" class="text-3xl font-bold text-gray-900 mt-1">Cargando...</p>
+                </div>
+                <!-- Tarjeta de Métrica 3: PS (Prosperidad Sostenible) Promedio -->
+                <div class="bg-yellow-50 p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
+                    <p class="text-sm font-semibold text-yellow-600 uppercase">PS (Prosperidad Sostenible) Promedio</p>
+                    <p id="avg_ps" class="text-3xl font-bold text-gray-900 mt-1">Cargando...</p>
+                </div>
+            </div>
         </section>
 
-        <!-- Área de Datos (Tabla) -->
-        <section class="overflow-x-auto">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-l-4 border-indigo-500 pl-3">Datos Detallados por Componente</h2>
-            <div id="data-container" class="bg-gray-50 rounded-lg p-4 shadow-inner min-h-24 flex items-center justify-center data-container-scroll">
-                <!-- El contenido de la tabla se insertará aquí -->
-                <div class="text-indigo-500 font-medium">Cargando datos...</div>
-            </div>
-            <div id="error-message" class="hidden mt-4 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
-                <strong class="font-bold">Advertencia de Datos:</strong>
-                <span id="error-text" class="block sm:inline"></span>
+        <!-- Sección de Datos Detallados -->
+        <section>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Datos Detallados por Componente</h2>
+            <div id="dataTable" class="table-container bg-white rounded-lg shadow-md">
+                <p class="p-4 text-gray-500">Cargando tabla de datos...</p>
             </div>
         </section>
 
     </div>
 
-    <footer class="mt-10 text-center text-gray-500 text-sm">
-        <p>&copy; 2024 Modelo de Prosperidad Sostenible. Datos auditables y en tiempo real.</p>
-    </footer>
-
+    <!-- Librería PapaParse para analizar CSV -->
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <script>
-        // *** CONFIGURACIÓN CRÍTICA PARA GITHUB PAGES ***
-        // Usamos el archivo corregido para evitar el error de campos faltantes.
-        const DATA_FILE = 'datasetmps_corregido.csv'; 
-        const dataContainer = document.getElementById('data-container');
-        const summaryMetrics = document.getElementById('summary-metrics');
-        const errorMessageDiv = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
-        
-        // CORRECCIÓN DEL BUG: Usar clases individuales con classList.remove
-        const showAlert = (title, message, isError = true) => {
-            console.warn(`[${isError ? 'ERROR' : 'ADVERTENCIA'}] ${title}:`, message);
-            document.querySelector('#error-message strong').textContent = isError ? 'Error de Carga:' : 'Advertencia de Datos:';
-            errorText.textContent = message;
-            errorMessageDiv.classList.remove('hidden');
+        // Nombre del archivo CSV subido a GitHub Pages
+        const DATA_FILE = 'datasetmps_corregido.csv';
+
+        // Constantes de estilo de alerta
+        const ALERT_ERROR_CLASSES = 'bg-red-100 border-red-400 text-red-700';
+        const ALERT_WARNING_CLASSES = 'bg-yellow-100 border-yellow-400 text-yellow-700';
+        const ALERT_SUCCESS_CLASSES = 'bg-green-100 border-green-400 text-green-700';
+        const EXPECTED_FIELDS_COUNT = 28;
+
+        /**
+         * Muestra una alerta en la parte superior de la página.
+         * @param {string} message - Mensaje a mostrar.
+         * @param {string} type - Tipo de alerta ('error', 'warning', 'success').
+         */
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.classList.remove(...ALERT_ERROR_CLASSES.split(' '), ...ALERT_WARNING_CLASSES.split(' '), ...ALERT_SUCCESS_CLASSES.split(' '));
             
-            // Limpiar ambas combinaciones de color
-            errorMessageDiv.classList.remove('bg-yellow-100', 'border-yellow-400', 'text-yellow-700');
-            errorMessageDiv.classList.remove('bg-red-100', 'border-red-400', 'text-red-700');
+            let classes;
+            switch (type) {
+                case 'error':
+                    classes = ALERT_ERROR_CLASSES;
+                    break;
+                case 'warning':
+                    classes = ALERT_WARNING_CLASSES;
+                    break;
+                case 'success':
+                default:
+                    classes = ALERT_SUCCESS_CLASSES;
+                    break;
+            }
+
+            alertContainer.className = `mb-6 p-4 rounded-lg text-sm ${classes}`;
+            alertContainer.innerHTML = message;
+            alertContainer.classList.remove('hidden');
+        }
+
+        /**
+         * Limpia un valor numérico para permitir operaciones (maneja comas como decimales).
+         * @param {string} value - Valor de texto con posible separador decimal de coma.
+         * @returns {number} Valor numérico.
+         */
+        function cleanNumber(value) {
+            if (typeof value !== 'string') return 0;
+            // Reemplaza la coma por punto (formato decimal) y elimina separadores de miles (puntos)
+            const cleaned = value.trim().replace(/\./g, '').replace(/,/g, '.');
+            const parsed = parseFloat(cleaned);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        /**
+         * Renderiza la tabla de datos y calcula las métricas clave.
+         * @param {Array<Object>} data - Datos CSV parseados.
+         * @param {Array<string>} meta - Metadata del parseo.
+         */
+        function renderData(data, meta) {
+            const dataTable = document.getElementById('dataTable');
             
-            // Aplicar el color correcto
-            if (isError) {
-                errorMessageDiv.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            // 1. Filtrar filas defectuosas y sumar métricas
+            let validData = [];
+            let sum_ch = 0;
+            let sum_pib = 0;
+            let sum_ps = 0;
+            
+            // Obtener el nombre de la columna para Prosperidad Sostenible (se asume que es la 23/index 22, pero se usa 'PS (Sostenible)')
+            const psColumnName = 'PS (Sostenible)';
+            const chColumnName = 'C_H (Índice)';
+            const pibColumnName = 'PIB nominal (MM Dolar)';
+
+            data.forEach(row => {
+                const keys = Object.keys(row);
+                // Validación estricta: si el número de campos no es el esperado, descartar la fila
+                if (keys.length === EXPECTED_FIELDS_COUNT) {
+                    validData.push(row);
+                    
+                    // Suma de métricas clave (ajustado a los nombres de columna del CSV)
+                    sum_ch += cleanNumber(row[chColumnName]);
+                    sum_pib += cleanNumber(row[pibColumnName]);
+                    sum_ps += cleanNumber(row[psColumnName]);
+                }
+            });
+
+            // 2. Mostrar advertencia si se descartaron filas
+            const discardedRows = data.length - validData.length;
+            if (discardedRows > 0) {
+                showAlert(`ADVERTENCIA: Se descartaron ${discardedRows} fila(s) debido a datos incompletos (esperado ${EXPECTED_FIELDS_COUNT} campos, pero se encontraron menos). Por favor, corrija el archivo CSV.`, 'warning');
             } else {
-                errorMessageDiv.classList.add('bg-yellow-100', 'border-yellow-400', 'text-yellow-700');
+                showAlert(`Carga exitosa. Se analizaron ${data.length} filas con ${EXPECTED_FIELDS_COUNT} columnas cada una.`, 'success');
             }
-        };
 
-        // Función de utilidad para limpiar y convertir valores numéricos del CSV
-        const parseNumber = (value) => {
-            // Reemplaza puntos por nada (separador de miles) y comas por puntos (separador decimal)
-            const cleaned = String(value).replace(/\./g, '').replace(/,/g, '.');
-            return parseFloat(cleaned);
-        };
-        
-        // Función de utilidad para formatear valores en la tabla
-        const formatValue = (value, header) => {
-            const num = parseNumber(value);
-            if (isNaN(num)) return value;
+            // 3. Renderizar Métricas Clave
+            const count = validData.length;
+            document.getElementById('avg_ch').textContent = (count > 0 ? (sum_ch / count).toFixed(2) : 'N/A');
+            document.getElementById('sum_pib').textContent = (sum_pib > 0 ? sum_pib.toFixed(2).replace(/\./g, ',') + 'M' : 'N/A');
+            document.getElementById('avg_ps').textContent = (count > 0 ? (sum_ps / count).toFixed(2) : 'N/A');
 
-            // Lógica de formato (porcentajes, índices, PIB)
-            if (header.includes('(Índice)') || header.includes('WJP') || header.includes('Fraser')) {
-                 return num.toFixed(2);
-            }
-            if (header.includes('(MM Dolar)')) {
-                // Formato de moneda, sin decimales para números muy grandes
-                return new Intl.NumberFormat('es-ES', { maximumFractionDigits: num >= 1000 ? 0 : 2 }).format(num);
-            }
-            if (header.includes('%pib') || header.includes('%')) {
-                return num.toFixed(1) + '%';
-            }
-            return num.toLocaleString('es-ES');
-        };
-        
-        // Función principal para renderizar la tabla y las métricas
-        const renderData = (data, meta) => {
-            if (!data || data.length === 0) {
-                showAlert('Datos Incompletos', 'El archivo CSV está vacío o no contiene datos válidos para mostrar.', true);
+            // 4. Renderizar Tabla
+            if (validData.length === 0) {
+                dataTable.innerHTML = '<p class="p-4 text-red-700">No se pudieron cargar datos válidos. Revise el formato y el delimitador del archivo CSV.</p>';
                 return;
             }
 
-            const headers = meta.fields || Object.keys(data[0]);
-            const expectedFieldCount = meta.fields ? meta.fields.length : Object.keys(data[0]).length;
+            const columns = Object.keys(validData[0]);
             
-            // FILTRAR filas defectuosas que causan el error "Too few fields"
-            let validData = data.filter(row => Object.keys(row).length === expectedFieldCount);
-            let droppedRowCount = data.length - validData.length;
-
-            if (droppedRowCount > 0) {
-                showAlert('Advertencia de Datos', 
-                    `Se ignoraron ${droppedRowCount} de ${data.length} filas debido a un formato incorrecto (es probable que falte un campo o un separador en esas filas). La visualización de la data válida continúa.`, 
-                    false); // Advertencia
-            }
-
-            if (validData.length === 0) {
-                 showAlert('Datos Incompletos', 'Todas las filas fueron ignoradas debido a errores de formato.', true);
-                 return;
-            }
+            let tableHTML = '<div class="table-container"><table class="min-w-full divide-y divide-gray-200">';
             
-            // 1. Renderizar la tabla
-            const tableHeaders = headers.map(header => `<th scope="col" class="py-3.5 px-3 text-sm font-semibold uppercase tracking-wider">${header}</th>`).join('');
-            const tableRows = validData.map(row => {
-                return `
-                    <tr class="hover:bg-indigo-50 transition duration-150">
-                        ${headers.map(header => `<td class="whitespace-nowrap text-sm text-gray-700">${formatValue(row[header], header)}</td>`).join('')}
-                    </tr>
-                `;
-            }).join('');
+            // Encabezados
+            tableHTML += '<thead class="bg-gray-100">';
+            tableHTML += '<tr>' + columns.map(col => `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${col}</th>`).join('') + '</tr>';
+            tableHTML += '</thead>';
 
-            dataContainer.innerHTML = `
-                <table class="min-w-full divide-y divide-gray-300 rounded-lg data-table">
-                    <thead class="bg-indigo-600 text-white sticky top-0">
-                        <tr>${tableHeaders}</tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">${tableRows}</tbody>
-                </table>
-            `;
-
-            // 2. Calcular y renderizar métricas de resumen
-            const scoreKey = 'C_H (Índice)';
-            const impactKey = 'PIB nominal (MM Dolar)';
-            const prosperityKey = 'PS (Sostenible)'; 
-
-            // C_H (Índice) Promedio
-            const globalScores = validData.map(row => parseNumber(row[scoreKey])).filter(n => !isNaN(n));
-            const avgScore = globalScores.length > 0 ? (globalScores.reduce((a, b) => a + b, 0) / globalScores.length) : NaN;
+            // Filas de Datos
+            tableHTML += '<tbody class="divide-y divide-gray-200">';
+            validData.forEach(row => {
+                tableHTML += '<tr class="hover:bg-gray-50">';
+                tableHTML += columns.map(col => `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row[col]}</td>`).join('');
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody>';
             
-            // Suma de PIB nominal (MM Dolar)
-            const totalImpact = validData.reduce((acc, row) => acc + (parseNumber(row[impactKey]) || 0), 0);
-            
-            // Prosperidad Sostenible (Promedio)
-            const prosperityValues = validData.map(row => parseNumber(row[prosperityKey])).filter(n => !isNaN(n));
-            const avgProsperity = prosperityValues.length > 0 ? (prosperityValues.reduce((a, b) => a + b, 0) / prosperityValues.length) : NaN;
+            tableHTML += '</table></div>';
+            dataTable.innerHTML = tableHTML;
+        }
 
-            const prosperityColor = avgProsperity > 0 ? 'text-green-600' : (avgProsperity > -5 ? 'text-yellow-600' : 'text-red-600');
-
-            summaryMetrics.innerHTML = `
-                <!-- Métrica 1: Prosperidad Sostenible Promedio -->
-                <div class="bg-indigo-50 p-5 rounded-xl shadow-md border-l-4 border-indigo-500">
-                    <p class="text-sm font-medium text-gray-500">Prosperidad Sostenible (Promedio)</p>
-                    <p class="mt-1 text-3xl font-bold ${prosperityColor}">${!isNaN(avgProsperity) ? avgProsperity.toFixed(2) : 'N/A'}</p>
-                    <p class="text-xs text-gray-500 mt-1">Resultado final promedio del modelo.</p>
-                </div>
-                
-                <!-- Métrica 2: Capacidad Humana (Promedio) -->
-                <div class="bg-blue-50 p-5 rounded-xl shadow-md border-l-4 border-blue-500">
-                    <p class="text-sm font-medium text-gray-500">Capacidad Humana Promedio</p>
-                    <p class="mt-1 text-3xl font-bold text-blue-800">${!isNaN(avgScore) ? avgScore.toFixed(2) : 'N/A'}</p>
-                    <p class="text-xs text-gray-500 mt-1">Nivel promedio de ${scoreKey}.</p>
-                </div>
-                
-                <!-- Métrica 3: PIB Nominal Total -->
-                <div class="bg-gray-50 p-5 rounded-xl shadow-md border-l-4 border-gray-500">
-                    <p class="text-sm font-medium text-gray-500">PIB Nominal Total (MM Dolar)</p>
-                    <p class="mt-1 text-3xl font-bold text-gray-800">${totalImpact.toLocaleString('es-ES', { maximumFractionDigits: 0 })}</p>
-                    <p class="text-xs text-gray-500 mt-1">Suma del impacto económico.</p>
-                </div>
-            `;
-        };
-
-        // Función para cargar los datos usando PapaParse
-        const loadData = () => {
-            fetch(DATA_FILE)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error ${response.status}: El archivo CSV no se encontró en la ruta ${DATA_FILE}.`);
+        /**
+         * Carga el archivo CSV usando PapaParse.
+         */
+        function loadData() {
+            Papa.parse(DATA_FILE, {
+                download: true,
+                header: true,
+                delimiter: ';', // USANDO PUNTO Y COMA COMO DELIMITADOR (SOLUCIÓN REGIONAL)
+                dynamicTyping: false,
+                skipEmptyLines: true,
+                error: function(err, file) {
+                    // Este error se dispara si el archivo no se encuentra (404) o hay un problema de red.
+                    showAlert(`Error de Carga: No se pudo cargar el archivo: ${err.name}: ${err.message}. Asegúrese de que el archivo ${DATA_FILE} está en la carpeta raíz.`, 'error');
+                },
+                complete: function(results) {
+                    if (results.errors.length > 0) {
+                        // Este error se dispara si el formato del CSV está mal (e.g., Too few fields)
+                        const firstError = results.errors[0];
+                        const errorMessage = `Error al analizar el CSV: ${firstError.message}.`;
+                        showAlert(`Error de Carga: ${errorMessage} Revise el formato de su CSV y asegúrese de que tiene ${EXPECTED_FIELDS_COUNT} columnas.`, 'error');
+                        document.getElementById('dataTable').innerHTML = `<p class="p-4 text-red-700">${errorMessage}</p>`;
+                        return;
                     }
-                    return response.text();
-                })
-                .then(csvText => {
-                    Papa.parse(csvText, {
-                        header: true,
-                        dynamicTyping: false, 
-                        skipEmptyLines: true,
-                        error: function(error, file, input) {
-                            console.error("PapaParse Error:", error);
-                        },
-                        complete: function(results) {
-                            // 1. Manejar Errores de PapaParse (como "Too few fields")
-                            if (results.errors.length) {
-                                // Mostramos el error como advertencia.
-                                showAlert('Error de CSV detectado', 
-                                    `PapaParse encontró ${results.errors.length} errores, incluyendo: "${results.errors[0].message}". Esto sucede cuando faltan campos o separadores en algunas filas. Se intentará cargar la data válida.`, 
-                                    false); 
-                            }
-                            
-                            // 2. Si no hay datos después del parseo, es un error crítico.
-                            if (!results.data || results.data.length === 0) {
-                                showAlert('Error Crítico', `No se pudieron obtener datos. Revise que el archivo ${DATA_FILE} no esté vacío y no tenga errores graves.`, true);
-                                return;
-                            }
-                            
-                            // 3. Llamamos a renderData, que filtrará las filas malformadas
-                            renderData(results.data, results.meta);
-                        }
-                    });
-                })
-                .catch(error => {
-                    showAlert('Error de Red/Ruta', `No se pudo cargar el archivo: ${error.message}. Asegúrese de que el archivo ${DATA_FILE} está en la carpeta raíz.`, true);
-                });
-        };
+                    renderData(results.data, results.meta);
+                }
+            });
+        }
 
-        // Inicializar la aplicación
+        // Inicia la carga de datos al cargar la página
         window.onload = loadData;
     </script>
 </body>
-</html>
 </html>
