@@ -70,7 +70,7 @@
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <script>
         // Nombre del archivo CSV subido a GitHub Pages
-        const DATA_FILE = 'datasetmps.csv'; // USANDO EL NOMBRE SIMPLE
+        const DATA_FILE = 'datasetmps.csv';
 
         // Constantes de estilo de alerta
         const ALERT_ERROR_CLASSES = 'bg-red-100 border-red-400 text-red-700';
@@ -106,14 +106,17 @@
         }
 
         /**
-         * Limpia un valor numérico para permitir operaciones (espera punto '.' como decimal).
+         * Limpia un valor numérico para permitir operaciones (maneja coma ',' como decimal).
          * @param {string} value - Valor de texto.
          * @returns {number} Valor numérico.
          */
         function cleanNumber(value) {
+            if (typeof value === 'number') return value;
             if (typeof value !== 'string') return 0;
-            // Estandariza a formato internacional (solo punto decimal)
-            const cleaned = value.trim().replace(/,/g, ''); // Elimina comas (si se usaron como separadores de miles)
+            
+            // 1. Reemplaza el punto (separador de miles) por nada, si existe.
+            // 2. Reemplaza la coma (separador decimal regional) por punto.
+            const cleaned = value.trim().replace(/\./g, '').replace(/,/g, '.');
             const parsed = parseFloat(cleaned);
             return isNaN(parsed) ? 0 : parsed;
         }
@@ -171,7 +174,7 @@
 
             // 4. Renderizar Tabla
             if (validData.length === 0) {
-                dataTable.innerHTML = `<p class="p-4 text-red-700">No se pudieron cargar datos válidos. Revise que su CSV (${DATA_FILE}) use la coma (,) como separador de campos y el punto (.) como decimal.</p>`;
+                dataTable.innerHTML = `<p class="p-4 text-red-700">No se pudieron cargar datos válidos. El CSV podría tener un delimitador incorrecto o el encabezado corrupto. Por favor, asegúrese de que el archivo ${DATA_FILE} tiene 28 columnas y usa la coma (,) o el punto y coma (;) de manera consistente.</p>`;
                 return;
             }
 
@@ -204,7 +207,7 @@
             Papa.parse(DATA_FILE, {
                 download: true,
                 header: true,
-                delimiter: ',', // FIJADO A COMA INTERNACIONAL
+                delimiter: '', // HABILITAR AUTO-DETECCIÓN
                 dynamicTyping: false,
                 skipEmptyLines: true,
                 error: function(err, file) {
@@ -229,4 +232,4 @@
         window.onload = loadData;
     </script>
 </body>
-</html>>
+</html>
