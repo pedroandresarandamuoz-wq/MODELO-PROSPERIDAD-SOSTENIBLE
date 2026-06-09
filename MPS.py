@@ -12,7 +12,7 @@ st.subheader("Investigación de indicadores macroeconómicos y parasitismo insti
 # 2. Carga de datos
 @st.cache_data
 def load_data():
-    ruta_json = os.path.join('BaseDeDatos', 'Pizarra_MPS_Master.json')
+    ruta_json = os.path.join('mps','BaseDeDatos', 'Pizarra_MPS_Master.json')
     if not os.path.exists(ruta_json):
         st.error(f"No se encuentra el archivo en: {ruta_json}")
         return pd.DataFrame()
