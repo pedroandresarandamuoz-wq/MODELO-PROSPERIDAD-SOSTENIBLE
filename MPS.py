@@ -396,11 +396,11 @@ elif vista == "comparador":
 
     pre = [p for p in ["España", "Alemania", "Estados Unidos", "Suiza"] if p in nombres]
     seleccion = st.multiselect(
-        "Elige países para comparar (2 o más)", nombres, default=pre
+        "Elige uno o varios países", nombres, default=pre
     )
 
-    if len(seleccion) < 2:
-        st.info("Selecciona al menos dos países.")
+    if len(seleccion) < 1:
+        st.info("Selecciona al menos un país.")
         st.stop()
 
     metrica = st.radio(
