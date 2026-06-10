@@ -670,13 +670,11 @@ elif vista == "autor":
     st.markdown(
         """
         <div class="tab-libro">
-            <div class="tab-portada">¿Sabes cuánto te cuesta tu político?</div>
+            <div class="tab-portada">Genealogía del Conflicto Eterno</div>
             <div>
                 <div class="tab-badge">📚 Disponible el 12 de octubre</div>
-                <h2>¿Sabes cuánto te cuesta tu político?</h2>
-                <p>El libro que lleva el Modelo de Prosperidad Sostenible al papel:
-                cuánto cuesta realmente sostener el sistema y qué prosperidad neta
-                recibes a cambio.</p>
+                <h2>Genealogía del Conflicto Eterno</h2>
+                <p>La nueva obra de Pedro Andrés Aranda Muñoz.</p>
                 <a class="tab-btn" href="https://www.amazon.es/dp/B0GMLH9NL2"
                    target="_blank" rel="noopener">Verlo en Amazon →</a>
             </div>
@@ -698,7 +696,6 @@ elif vista == "autor":
         """
         <div class="tab-enlaces">
             <a class="tab-enlace" href="https://amzn.eu/d/0gzMv98Y" target="_blank" rel="noopener">¿Cuánto cuesta tu político?</a>
-            <a class="tab-enlace" href="https://amzn.eu/d/09V2VENW" target="_blank" rel="noopener">Genealogía del Conflicto Eterno</a>
             <a class="tab-enlace" href="https://amzn.eu/d/4Si0xvm" target="_blank" rel="noopener">Las Realidades de Eva</a>
         </div>
         """,

@@ -8,7 +8,7 @@ Cambios en las páginas de contenido (la web del MPS) respecto a versiones anter
 
 - Nueva vista **🏛️ El autor**: atribuciones a **Pedro Andrés Aranda Muñoz**
   (jurista, analista y creador del Modelo de Prosperidad Sostenible), con su
-  canal de YouTube *El Tablinum*, el libro «¿Sabes cuánto te cuesta tu político?»
+  canal de YouTube *El Tablinum*, el libro «Genealogía del Conflicto Eterno»
   (disponible el 12 de octubre), el resto de sus libros y sus redes sociales.
 
 ---
