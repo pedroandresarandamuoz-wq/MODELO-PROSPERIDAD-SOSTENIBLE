@@ -557,6 +557,18 @@ elif vista == "ranking":
 
 # --- Pie -----------------------------------------------------------------------
 st.markdown("---")
+with st.expander("🆕 Novedades de esta versión (2.0)"):
+    st.markdown(
+        "Esta versión rediseña el panel para que se entienda sin saber de "
+        "estadística:\n"
+        "- **Países con nombre y bandera** en vez de códigos.\n"
+        "- **Índice de Prosperidad 0-100** comparable (antes los valores brutos "
+        "tenían extremos que hacían ilegibles las gráficas).\n"
+        "- **Mapa mundial**, **ficha de país** en lenguaje llano, **comparador** "
+        "con media ponderada y **clasificación** tipo liga.\n\n"
+        "Versiones anteriores: tres vistas con tablas/gráficas de datos en crudo "
+        "y códigos de país. Detalle completo en el `CHANGELOG.md` del repositorio."
+    )
 with st.expander("⚠️ Metodología y fuentes"):
     st.warning(
         "Datos armonizados de organismos internacionales (BM, FMI, BCE, OCDE). "
