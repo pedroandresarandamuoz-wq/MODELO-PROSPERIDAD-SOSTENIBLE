@@ -217,6 +217,7 @@ VISTAS = {
     "🪪 Ficha de país": "ficha",
     "⚖️ Comparador": "comparador",
     "🏆 Clasificación": "ranking",
+    "🏛️ El autor": "autor",
 }
 eleccion = st.sidebar.radio("Vista", list(VISTAS.keys()))
 vista = VISTAS[eleccion]
@@ -553,6 +554,174 @@ elif vista == "ranking":
     st.caption(
         "Δ compara el puesto (por Prosperidad Neta) con el del año anterior. "
         "▲ sube, ▼ baja."
+    )
+
+# =============================================================================
+#  VISTA 5 — EL AUTOR (atribuciones a Pedro Andrés Aranda Muñoz)
+# =============================================================================
+elif vista == "autor":
+    st.markdown(
+        """
+        <style>
+        .tab-hero {
+            background: radial-gradient(circle at 20% 20%, #3a0d0d 0%, #1a0808 70%);
+            border: 1px solid #c9a227; border-radius: 18px;
+            padding: 34px 30px; color: #f5ede0; margin-bottom: 22px;
+            display: flex; gap: 26px; align-items: center; flex-wrap: wrap;
+        }
+        .tab-monograma {
+            width: 110px; height: 110px; flex: 0 0 110px; border-radius: 50%;
+            background: linear-gradient(145deg, #c9a227, #8b6f14);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 58px; box-shadow: 0 0 0 4px rgba(201,162,39,.25);
+        }
+        .tab-hero h1 { color: #ffffff; margin: 0 0 4px 0; font-size: 1.9rem; }
+        .tab-tagline { color: #c9a227; font-weight: 700; letter-spacing: .5px;
+            text-transform: uppercase; font-size: .9rem; margin-bottom: 8px; }
+        .tab-hero p { margin: 0; color: #e7dcc8; max-width: 640px; line-height: 1.5; }
+        .tab-maximas { display: flex; gap: 14px; flex-wrap: wrap; margin: 6px 0 22px; }
+        .tab-maxima {
+            flex: 1 1 200px; background: #fbf7ee; border-left: 4px solid #c9a227;
+            border-radius: 8px; padding: 16px 18px; font-style: italic;
+            font-size: 1.05rem; color: #3a2e10;
+        }
+        .tab-cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+        .tab-card {
+            flex: 1 1 260px; border: 1px solid #e6e0d2; border-radius: 14px;
+            padding: 20px 22px; background: #ffffff;
+        }
+        .tab-card h3 { margin: 0 0 8px 0; }
+        .tab-card.quiosco { border-top: 5px solid #c0392b; }
+        .tab-card.forjador { border-top: 5px solid #5b3a8c; }
+        .tab-libro {
+            display: flex; gap: 22px; flex-wrap: wrap; align-items: center;
+            background: linear-gradient(135deg, #1a0808, #3a0d0d); color: #f5ede0;
+            border: 1px solid #c9a227; border-radius: 16px; padding: 26px 28px;
+            margin-bottom: 22px;
+        }
+        .tab-portada {
+            flex: 0 0 120px; width: 120px; height: 170px; border-radius: 8px;
+            background: linear-gradient(160deg, #c9a227, #6b5310); color: #1a0808;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-weight: 800; padding: 14px; font-size: .95rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,.4);
+        }
+        .tab-libro h2 { color: #fff; margin: 0 0 6px 0; }
+        .tab-badge {
+            display: inline-block; background: #c9a227; color: #1a0808;
+            font-weight: 700; border-radius: 999px; padding: 3px 14px;
+            font-size: .8rem; margin-bottom: 10px;
+        }
+        .tab-btn {
+            display: inline-block; background: #c9a227; color: #1a0808 !important;
+            text-decoration: none; font-weight: 700; padding: 10px 20px;
+            border-radius: 8px; margin-top: 6px;
+        }
+        .tab-enlaces { display: flex; gap: 12px; flex-wrap: wrap; }
+        .tab-enlace {
+            text-decoration: none; border: 1px solid #e0dccf; border-radius: 10px;
+            padding: 12px 18px; color: #2b2b2b !important; font-weight: 600;
+            background: #fbf9f4; flex: 1 1 150px; text-align: center;
+        }
+        .tab-enlace:hover, .tab-card:hover { border-color: #c9a227; }
+        </style>
+
+        <div class="tab-hero">
+            <div class="tab-monograma">🏛️</div>
+            <div>
+                <div class="tab-tagline">Bienvenido al Tablinum</div>
+                <h1>Pedro Andrés Aranda Muñoz</h1>
+                <p><b>Jurista, analista y creador.</b> Autor del <b>Modelo de
+                Prosperidad Sostenible (MPS)</b> en el que se basa este panel.
+                «El dato mata al relato»: aquí se auditan las cuentas del poder y
+                se mide, con números, cuánto pesa de verdad la fricción estatal.</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class="tab-maximas">
+            <div class="tab-maxima">«El dato mata al relato.»</div>
+            <div class="tab-maxima">«El individuo prevalece sobre la masa.»</div>
+            <div class="tab-maxima">«Nadie tiene derecho a pasar sobre ti.»</div>
+        </div>
+
+        <div class="tab-cards">
+            <div class="tab-card quiosco">
+                <h3>🔴 El Quiosco</h3>
+                <p>Análisis diario de prensa y geopolítica sin filtros. Usa el
+                Modelo de Prosperidad Sostenible para medir matemáticamente la
+                <b>Carga Parasitaria Total</b> y mostrar la fricción del aparato
+                estatal.</p>
+            </div>
+            <div class="tab-card forjador">
+                <h3>🌌 El Forjador</h3>
+                <p>Ciencia ficción y <i>lore</i>. Porque el hombre libre también
+                necesita imaginación: el último refugio que no pueden regular.</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class="tab-libro">
+            <div class="tab-portada">¿Sabes cuánto te cuesta tu político?</div>
+            <div>
+                <div class="tab-badge">📚 Disponible el 12 de octubre</div>
+                <h2>¿Sabes cuánto te cuesta tu político?</h2>
+                <p>El libro que lleva el Modelo de Prosperidad Sostenible al papel:
+                cuánto cuesta realmente sostener el sistema y qué prosperidad neta
+                recibes a cambio.</p>
+                <a class="tab-btn" href="https://www.amazon.es/dp/B0GMLH9NL2"
+                   target="_blank" rel="noopener">Verlo en Amazon →</a>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.subheader("📺 Canal de YouTube")
+    st.markdown(
+        '<a class="tab-btn" href="https://www.youtube.com/@pedroandresaranda" '
+        'target="_blank" rel="noopener">▶ El Tablinum — @pedroandresaranda</a>',
+        unsafe_allow_html=True,
+    )
+    st.caption("717 vídeos · análisis, geopolítica y ciencia ficción.")
+
+    st.subheader("📚 Más libros")
+    st.markdown(
+        """
+        <div class="tab-enlaces">
+            <a class="tab-enlace" href="https://amzn.eu/d/0gzMv98Y" target="_blank" rel="noopener">¿Cuánto cuesta tu político?</a>
+            <a class="tab-enlace" href="https://amzn.eu/d/09V2VENW" target="_blank" rel="noopener">Genealogía del Conflicto Eterno</a>
+            <a class="tab-enlace" href="https://amzn.eu/d/4Si0xvm" target="_blank" rel="noopener">Las Realidades de Eva</a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.subheader("🔗 Síguelo")
+    st.markdown(
+        """
+        <div class="tab-enlaces">
+            <a class="tab-enlace" href="https://www.youtube.com/@pedroandresaranda" target="_blank" rel="noopener">▶ YouTube</a>
+            <a class="tab-enlace" href="https://www.tiktok.com/@andrs.muoz646" target="_blank" rel="noopener">🎵 TikTok</a>
+            <a class="tab-enlace" href="https://www.instagram.com/amopoemp" target="_blank" rel="noopener">📷 Instagram</a>
+            <a class="tab-enlace" href="https://www.facebook.com/pedroandres.arandamunoz" target="_blank" rel="noopener">👍 Facebook</a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.info(
+        "El **Modelo de Prosperidad Sostenible** y su metodología son obra de "
+        "Pedro Andrés Aranda Muñoz. Este panel es una herramienta para divulgar "
+        "y explorar su trabajo. *Pan, Patria y Justicia.*"
     )
 
 # --- Pie -----------------------------------------------------------------------

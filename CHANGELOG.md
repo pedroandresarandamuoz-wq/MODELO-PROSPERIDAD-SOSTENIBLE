@@ -4,6 +4,15 @@ Cambios en las páginas de contenido (la web del MPS) respecto a versiones anter
 
 ---
 
+## Versión 2.1 — Vista del autor (2026-06-11)
+
+- Nueva vista **🏛️ El autor**: atribuciones a **Pedro Andrés Aranda Muñoz**
+  (jurista, analista y creador del Modelo de Prosperidad Sostenible), con su
+  canal de YouTube *El Tablinum*, el libro «¿Sabes cuánto te cuesta tu político?»
+  (disponible el 12 de octubre), el resto de sus libros y sus redes sociales.
+
+---
+
 ## Versión 2.0 — Panel divulgativo (2026-06-11)
 
 Rediseño completo para que los datos los entienda **cualquier persona**, no solo
