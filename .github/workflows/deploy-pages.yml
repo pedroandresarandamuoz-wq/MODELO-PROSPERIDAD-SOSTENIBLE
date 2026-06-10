@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - "mps-01-despliegue-estatico-stlite-github-pages"
+      - "mps-02-ux-visualizaciones-consumibles"
   workflow_dispatch:
 
 # Permisos necesarios para que Actions pueda publicar en Pages.
