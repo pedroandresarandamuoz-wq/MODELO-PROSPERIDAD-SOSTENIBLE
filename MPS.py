@@ -624,10 +624,51 @@ elif vista == "autor":
             background: #fbf9f4; flex: 1 1 150px; text-align: center;
         }
         .tab-enlace:hover, .tab-card:hover { border-color: #c9a227; }
+
+        /* Foto del autor en el hero */
+        .tab-foto {
+            width: 132px; height: 132px; flex: 0 0 132px; border-radius: 50%;
+            object-fit: cover; border: 4px solid #c9a227;
+            box-shadow: 0 0 0 5px rgba(201,162,39,.2);
+        }
+        /* Portada real del libro destacado */
+        .tab-portada-img {
+            flex: 0 0 150px; width: 150px; border-radius: 8px;
+            box-shadow: 0 12px 30px rgba(0,0,0,.5);
+        }
+        /* Rejilla de "Más libros" con portadas */
+        .tab-libros2 { display: flex; gap: 24px; flex-wrap: wrap; margin: 6px 0 4px; }
+        .tab-libro2 { width: 150px; text-decoration: none; color: #2b2b2b !important; }
+        .tab-libro2 img {
+            width: 150px; border-radius: 8px; display: block;
+            box-shadow: 0 6px 18px rgba(0,0,0,.18); transition: transform .15s;
+        }
+        .tab-libro2:hover img { transform: translateY(-5px); }
+        .tab-libro2 span {
+            display: block; margin-top: 10px; font-weight: 600;
+            font-size: .9rem; text-align: center; line-height: 1.3;
+        }
+        /* Iconos oficiales de redes (sin recuadros crema) */
+        .tab-redes { display: flex; gap: 22px; flex-wrap: wrap; margin: 4px 0; }
+        .tab-red {
+            display: flex; flex-direction: column; align-items: center; gap: 9px;
+            text-decoration: none; color: #444 !important; font-weight: 600;
+            font-size: .85rem;
+        }
+        .tab-red img {
+            width: 58px; height: 58px; padding: 15px; border-radius: 50%;
+            background: #fff; border: 1px solid #ece7da; box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0,0,0,.07);
+            transition: transform .15s, box-shadow .15s;
+        }
+        .tab-red:hover img {
+            transform: translateY(-4px); box-shadow: 0 8px 18px rgba(0,0,0,.16);
+        }
         </style>
 
         <div class="tab-hero">
-            <div class="tab-monograma">🏛️</div>
+            <img class="tab-foto" src="assets/pedro.jpg"
+                 alt="Pedro Andrés Aranda Muñoz" />
             <div>
                 <div class="tab-tagline">Bienvenido al Tablinum</div>
                 <h1>Pedro Andrés Aranda Muñoz</h1>
@@ -670,7 +711,8 @@ elif vista == "autor":
     st.markdown(
         """
         <div class="tab-libro">
-            <div class="tab-portada">Genealogía del Conflicto Eterno</div>
+            <img class="tab-portada-img" src="assets/libro-genealogia.jpg"
+                 alt="Portada de Genealogía del Conflicto Eterno" />
             <div>
                 <div class="tab-badge">📚 Disponible el 12 de octubre</div>
                 <h2>Genealogía del Conflicto Eterno</h2>
@@ -694,9 +736,15 @@ elif vista == "autor":
     st.subheader("📚 Más libros")
     st.markdown(
         """
-        <div class="tab-enlaces">
-            <a class="tab-enlace" href="https://amzn.eu/d/0gzMv98Y" target="_blank" rel="noopener">¿Cuánto cuesta tu político?</a>
-            <a class="tab-enlace" href="https://amzn.eu/d/4Si0xvm" target="_blank" rel="noopener">Las Realidades de Eva</a>
+        <div class="tab-libros2">
+            <a class="tab-libro2" href="https://amzn.eu/d/0gzMv98Y" target="_blank" rel="noopener">
+                <img src="assets/libro-politico.jpg" alt="¿Cuánto cuesta tu político?" />
+                <span>¿Cuánto cuesta tu político?</span>
+            </a>
+            <a class="tab-libro2" href="https://amzn.eu/d/4Si0xvm" target="_blank" rel="noopener">
+                <img src="assets/libro-eva.jpg" alt="Las Realidades de Eva" />
+                <span>Las Realidades de Eva</span>
+            </a>
         </div>
         """,
         unsafe_allow_html=True,
@@ -705,12 +753,21 @@ elif vista == "autor":
     st.subheader("🔗 Síguelo")
     st.markdown(
         """
-        <div class="tab-enlaces">
-            <a class="tab-enlace" href="https://www.youtube.com/@pedroandresaranda" target="_blank" rel="noopener">▶ YouTube</a>
-            <a class="tab-enlace" href="https://www.tiktok.com/@andrs.muoz646" target="_blank" rel="noopener">🎵 TikTok</a>
-            <a class="tab-enlace" href="https://www.instagram.com/amopoemp" target="_blank" rel="noopener">📷 Instagram</a>
-            <a class="tab-enlace" href="https://www.facebook.com/pedroandres.arandamunoz" target="_blank" rel="noopener">👍 Facebook</a>
+        <div class="tab-redes">
+            <a class="tab-red" href="https://www.youtube.com/@pedroandresaranda" target="_blank" rel="noopener">
+                <img src="assets/icon-youtube.svg" alt="YouTube" /><span>YouTube</span>
+            </a>
+            <a class="tab-red" href="https://www.tiktok.com/@andrs.muoz646" target="_blank" rel="noopener">
+                <img src="assets/icon-tiktok.svg" alt="TikTok" /><span>TikTok</span>
+            </a>
+            <a class="tab-red" href="https://www.instagram.com/amopoemp" target="_blank" rel="noopener">
+                <img src="assets/icon-instagram.svg" alt="Instagram" /><span>Instagram</span>
+            </a>
+            <a class="tab-red" href="https://www.facebook.com/pedroandres.arandamunoz" target="_blank" rel="noopener">
+                <img src="assets/icon-facebook.svg" alt="Facebook" /><span>Facebook</span>
+            </a>
         </div>
+        <div style="height: 34px;"></div>
         """,
         unsafe_allow_html=True,
     )

@@ -34,6 +34,7 @@ jobs:
           cp index.html dist/index.html
           cp MPS.py dist/MPS.py
           cp BaseDeDatos/Pizarra_MPS_Master.json dist/BaseDeDatos/Pizarra_MPS_Master.json
+          cp -r assets dist/assets
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
