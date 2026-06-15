@@ -1,0 +1,47 @@
+=== INFORME: CAUSALIDAD GRANGER (TPL -> PIB) ===
+Análisis de retardo (lag) de 1 a 2 años por país.
+
+
+[PAÍS: BDI] - CAUSALIDAD CONFIRMADA (P-valor: 0.0203)
+
+[PAÍS: BHR] - CAUSALIDAD CONFIRMADA (P-valor: 0.0253)
+
+[PAÍS: BIH] - CAUSALIDAD CONFIRMADA (P-valor: 0.0270)
+
+[PAÍS: BOL] - CAUSALIDAD CONFIRMADA (P-valor: 0.0358)
+
+[PAÍS: DJI] - CAUSALIDAD CONFIRMADA (P-valor: 0.0496)
+
+[PAÍS: DNK] - CAUSALIDAD CONFIRMADA (P-valor: 0.0140)
+
+[PAÍS: EGY] - CAUSALIDAD CONFIRMADA (P-valor: 0.0204)
+
+[PAÍS: GRC] - CAUSALIDAD CONFIRMADA (P-valor: 0.0481)
+
+[PAÍS: KAZ] - CAUSALIDAD CONFIRMADA (P-valor: 0.0119)
+
+[PAÍS: KHM] - CAUSALIDAD CONFIRMADA (P-valor: 0.0109)
+
+[PAÍS: KWT] - CAUSALIDAD CONFIRMADA (P-valor: 0.0396)
+
+[PAÍS: LKA] - CAUSALIDAD CONFIRMADA (P-valor: 0.0188)
+
+[PAÍS: MUS] - CAUSALIDAD CONFIRMADA (P-valor: 0.0393)
+
+[PAÍS: PRY] - CAUSALIDAD CONFIRMADA (P-valor: 0.0328)
+
+[PAÍS: SDN] - CAUSALIDAD CONFIRMADA (P-valor: 0.0175)
+
+[PAÍS: TZA] - CAUSALIDAD CONFIRMADA (P-valor: 0.0363)
+
+[PAÍS: UGA] - CAUSALIDAD CONFIRMADA (P-valor: 0.0049)
+
+[PAÍS: VNM] - CAUSALIDAD CONFIRMADA (P-valor: 0.0374)
+
+
+==========================================
+RESUMEN FINAL:
+Países analizados: 156
+Países con causalidad confirmada: 18
+Tasa de validación: 11.54%
+==========================================

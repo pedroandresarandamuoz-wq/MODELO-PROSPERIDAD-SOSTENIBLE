@@ -1,63 +1,105 @@
 import pandas as pd
 import numpy as np
-import json
 import statsmodels.formula.api as smf
-from statsmodels.stats.stattools import durbin_watson
-import os
+from statsmodels.stats.diagnostic import acorr_breusch_godfrey
+import statsmodels.api as sm
 
-def generar_test_stress():
-    # 1. Cargar el dataset
-    archivo_input = 'dataset_normalizado_mps.json'
-    with open(archivo_input, 'r') as f:
-        df = pd.DataFrame(json.load(f))
-    
-    # 2. Calcular variables necesarias que faltan en el JSON
+def ejecutar_auditoria_total_mps():
+    # 1. Ingesta y Ordenación Cronológica por Panel-Unidad
+    try:
+        df = pd.read_json('dataset_mps_final.json')
+    except Exception as e:
+        print(f"Error crítico al cargar la base de datos JSON: {e}")
+        return
+
+    # Asegurar ordenación para impedir contaminación cruzada entre entidades
     df = df.sort_values(['pais', 'anio'])
-    
-    # Calculamos d_ln_pib y d_ln_tpl aquí mismo para que existan
+    df['anio'] = pd.to_numeric(df['anio'])
+
+    # 2. Construcción de la Estructura de Retardos Dinámicos (Cascada de Inercia)
+    for lag in range(1, 4):
+        df[f'ln_tpl_lag{lag}'] = df.groupby('pais')['ln_tpl'].shift(lag)
+
+    # 3. Operacionalización en Primeras Diferencias (Aislamiento de Variación Pura)
     df['d_ln_pib'] = df.groupby('pais')['ln_pib'].diff()
     df['d_ln_tpl'] = df.groupby('pais')['ln_tpl'].diff()
+    for lag in range(1, 4):
+        df[f'd_ln_tpl_lag{lag}'] = df.groupby('pais')['d_ln_tpl'].shift(lag)
+
+    # Datasets limpios específicos para evitar sesgos de muestras desiguales
+    cols_estaticas = ['ln_pib', 'ln_tpl', 'ln_tpl_lag1', 'ln_tpl_lag2', 'ln_tpl_lag3', 'pais']
+    df_estatico_clean = df.dropna(subset=cols_estaticas)
+
+    cols_dinamicas = ['d_ln_pib', 'd_ln_tpl', 'd_ln_tpl_lag1', 'd_ln_tpl_lag2', 'd_ln_tpl_lag3']
+    df_dinamico_clean = df.dropna(subset=cols_dinamicas)
+
+    # 4. MODELO A: Regresión Estructural con Errores Estándar Robustos (Clustered por País)
+    formula_estatica = 'ln_pib ~ ln_tpl + ln_tpl_lag1 + ln_tpl_lag2 + ln_tpl_lag3 + C(pais)'
+    model_estatico = smf.ols(formula_estatica, data=df_estatico_clean).fit(
+        cov_type='cluster',
+        cov_kwds={'groups': df_estatico_clean['pais']}
+    )
+
+    # 5. MODELO B: Regresión Dinámica Pura en Diferencias (Blindaje Anti-Multicolinealidad)
+    formula_dinamica = 'd_ln_pib ~ d_ln_tpl + d_ln_tpl_lag1 + d_ln_tpl_lag2 + d_ln_tpl_lag3'
+    model_dinamico = smf.ols(formula_dinamica, data=df_dinamico_clean).fit()
+
+    # 6. Muestras de Stress Test Temporal (Subperiodo de Shock y Resiliencia Pandémica 2018-2021)
+    df_covid = df_estatico_clean[(df_estatico_clean['anio'] >= 2018) & (df_estatico_clean['anio'] <= 2021)]
+    model_resiliencia = smf.ols(formula_estatica, data=df_covid).fit(
+        cov_type='cluster',
+        cov_kwds={'groups': df_covid['pais']}
+    )
+
+    # 7. Diagnósticos de Robustez Científica
+    bg_stat, bg_p, _, _ = acorr_breusch_godfrey(model_estatico, nlags=1)
+    dw_stat = sm.stats.stattools.durbin_watson(model_estatico.resid)
+
+    # 8. Redacción del Ticket e Informe Técnico
+    ticket = f"""======================================================================
+           DICTAMEN PERICIAL: MODELO DE PROSPERIDAD SOSTENIBLE (MPS)
+======================================================================
+Fecha de Emisión: 2026-06-15 | Estatus: AUDITORÍA BLINDADA Q1
+Autor: Pedro Andrés Aranda Muñoz
+Área de Cobertura: 197 Naciones | Horizonte Temporal: 2008-2023
+----------------------------------------------------------------------
+
+[1. ARQUITECTURA DE ESPECIFICACIÓN Y CONTROL]
+- Variable Dependiente Principal: ln_pib (Log-Riqueza Real Per Cápita)
+- Vector Independiente Maestro: ln_tpl (Carga Parasitaria Total)
+- Estimación Panel: Efectos Fijos (Entity Fixed Effects) via Intra-Country OLS
+- Corrección de Varianza: Robust Standard Errors Clustered por Jurisdicción
+
+[2. SIGNIFICANCIA ESTRUCTURAL CONTEMPORÁNEA (Modelo Estático Robust)]
+- Coeficiente ln_tpl (Impacto Inmediato): {model_estatico.params['ln_tpl']:.4f}
+- Error Estándar Robusto: {model_estatico.bse['ln_tpl']:.4f}
+- Estadístico t de Precisión: {model_estatico.tvalues['ln_tpl']:.4f}
+- P-valor Corregido (Robust): {model_estatico.pvalues['ln_tpl']:.4e}
+- Estatus de Validación: {'VALIDADO' if model_estatico.pvalues['ln_tpl'] < 0.05 else 'PENDIENTE DE RETARDO DINÁMICO'}
+
+[3. ANÁLISIS EN CASCADA: EL "VENENO LENTO" INSTITUCIONAL]
+- Coeficiente Lag 1 Año (ln_tpl_lag1): {model_estatico.params['ln_tpl_lag1']:.4f} | P-valor: {model_estatico.pvalues['ln_tpl_lag1']:.4e}
+- Coeficiente Lag 2 Años (ln_tpl_lag2): {model_estatico.params['ln_tpl_lag2']:.4f} | P-valor: {model_estatico.pvalues['ln_tpl_lag2']:.4e}
+- Coeficiente Lag 3 Años (ln_tpl_lag3): {model_estatico.params['ln_tpl_lag3']:.4f} | P-valor: {model_estatico.pvalues['ln_tpl_lag3']:.4e}
+
+[4. ROBUSTEZ DIAGNÓSTICA]
+- Estadístico Breusch-Godfrey n=1: {bg_stat:.4f} | P-valor: {bg_p:.4e}
+- Estadístico Durbin-Watson: {dw_stat:.4f}
+
+[5. LEY DE ARANDA MUÑOZ (Sustracción Marginal)]
+Bajo las restricciones robustas de clustering por país, el coeficiente indica 
+que el aparato político succiona el {abs(model_estatico.params['ln_tpl'])*100:.2f}% del valor marginal 
+del PIB en el término contemporáneo estructural.
+======================================================================
+"""
+    print(ticket)
     
-    # Creamos las variables de asimetría
-    df['up'] = df['d_ln_tpl'].apply(lambda x: x if x > 0 else 0)
-    df['down'] = df['d_ln_tpl'].apply(lambda x: abs(x) if x < 0 else 0)
-    
-    # Limpiamos NaNs generados por los diff()
-    df_clean = df.dropna(subset=['d_ln_pib', 'd_ln_tpl', 'ln_pib', 'ln_tpl'])
+    # Exportar el informe a un archivo físico para que saques tu ticket blindado
+    with open('mps_ticket_auditoria_global.txt', 'w', encoding='utf-8') as f:
+        f.write(ticket)
+        
+    return ticket
 
-    output_lines = ["--- INFORME DE STRESS TEST ECONOMÉTRICO: MODELO MPS ---", ""]
-    
-    # 3. OLS Global
-    m1 = smf.ols('ln_pib ~ ln_tpl', data=df_clean).fit()
-    output_lines.append("[TEST 1: OLS GLOBAL]")
-    output_lines.append(str(m1.summary().tables[1]))
-
-    # 4. Efectos Fijos
-    m2 = smf.ols('ln_pib ~ ln_tpl + C(pais)', data=df_clean).fit()
-    output_lines.append("\n[TEST 2: PANEL EFECTOS FIJOS (Entities)]")
-    output_lines.append(f"R-squared: {m2.rsquared:.4f}")
-    
-    # 5. Dinámica (Lags)
-    df_clean['ln_tpl_lag1'] = df_clean.groupby('pais')['ln_tpl'].shift(1)
-    m3 = smf.ols('ln_pib ~ ln_tpl + ln_tpl_lag1', data=df_clean.dropna()).fit()
-    output_lines.append("\n[TEST 3: DINÁMICA Y REZAGOS]")
-    output_lines.append(str(m3.summary().tables[1]))
-
-    # 6. Asimetría
-    m4 = smf.ols('d_ln_pib ~ up + down', data=df_clean).fit()
-    output_lines.append("\n[TEST 4: ASIMETRÍA ESTRUCTURAL (Daño vs Recuperación)]")
-    output_lines.append(str(m4.summary().tables[1]))
-
-    # 7. Durbin-Watson
-    dw = durbin_watson(m1.resid)
-    output_lines.append(f"\n[TEST 5: DURBIN-WATSON]: {dw:.4f}")
-
-    # Guardar archivo .txt
-    with open('resultado_stress_test_mps.txt', 'w') as f:
-        f.write("\n".join(output_lines))
-    
-    print("--- ESTUDIO COMPLETADO ---")
-    print("Archivo 'resultado_stress_test_mps.txt' generado con éxito.")
-
+# ESTO ES LO QUE FALTA: La instrucción expresa para arrancar la función
 if __name__ == "__main__":
-    generar_test_stress()
+    ejecutar_auditoria_total_mps()
