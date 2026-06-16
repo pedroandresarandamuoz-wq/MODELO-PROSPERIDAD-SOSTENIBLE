@@ -13,23 +13,23 @@ Autor: Pedro Andrés Aranda Muñoz
 - Corrección de Varianza: Robust Standard Errors Clustered por Jurisdicción
 
 [2. SIGNIFICANCIA ESTRUCTURAL CONTEMPORÁNEA (Modelo Estático Robust)]
-- Coeficiente ln_tpl (Impacto Inmediato): -0.2034
-- Error Estándar Robusto: 0.2015
-- Estadístico t de Precisión: -1.0091
-- P-valor Corregido (Robust): 3.1292e-01
+- Coeficiente ln_tpl (Impacto Inmediato): -0.3392
+- Error Estándar Robusto: 0.3308
+- Estadístico t de Precisión: -1.0255
+- P-valor Corregido (Robust): 3.0513e-01
 - Estatus de Validación: PENDIENTE DE RETARDO DINÁMICO
 
 [3. ANÁLISIS EN CASCADA: EL "VENENO LENTO" INSTITUCIONAL]
-- Coeficiente Lag 1 Año (ln_tpl_lag1): -0.0926 | P-valor: 2.9656e-01
-- Coeficiente Lag 2 Años (ln_tpl_lag2): -0.0864 | P-valor: 3.1873e-01
-- Coeficiente Lag 3 Años (ln_tpl_lag3): -0.0108 | P-valor: 5.5120e-01
+- Coeficiente Lag 1 Año (ln_tpl_lag1): -0.1061 | P-valor: 3.1863e-01
+- Coeficiente Lag 2 Años (ln_tpl_lag2): -0.1443 | P-valor: 3.1025e-01
+- Coeficiente Lag 3 Años (ln_tpl_lag3): 0.0362 | P-valor: 6.2500e-01
 
 [4. ROBUSTEZ DIAGNÓSTICA]
-- Estadístico Breusch-Godfrey n=1: 203.5410 | P-valor: 3.5249e-46
-- Estadístico Durbin-Watson: 1.3846
+- Estadístico Breusch-Godfrey n=1: 199.1905 | P-valor: 3.1368e-45
+- Estadístico Durbin-Watson: 1.3920
 
 [5. LEY DE ARANDA MUÑOZ (Sustracción Marginal)]
 Bajo las restricciones robustas de clustering por país, el coeficiente indica 
-que el aparato político succiona el 20.34% del valor marginal 
+que el aparato político succiona el 33.92% del valor marginal 
 del PIB en el término contemporáneo estructural.
 ======================================================================

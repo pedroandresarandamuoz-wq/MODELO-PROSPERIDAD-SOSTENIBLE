@@ -1,0 +1,29 @@
+=== REPORTE FINAL DE CONSISTENCIA MPS ===
+
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 ln_pib   R-squared:                       0.024
+Model:                            OLS   Adj. R-squared:                  0.023
+Method:                 Least Squares   F-statistic:                     62.36
+Date:                Mon, 15 Jun 2026   Prob (F-statistic):           4.20e-15
+Time:                        19:45:02   Log-Likelihood:                -5206.1
+No. Observations:                2560   AIC:                         1.042e+04
+Df Residuals:                    2558   BIC:                         1.043e+04
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     10.4122      0.126     82.370      0.000      10.164      10.660
+ln_tpl        -0.1945      0.025     -7.897      0.000      -0.243      -0.146
+==============================================================================
+Omnibus:                     3944.127   Durbin-Watson:                   0.424
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):          2356125.193
+Skew:                          -9.427   Prob(JB):                         0.00
+Kurtosis:                     150.422   Cond. No.                         18.4
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+Test Durbin-Watson: 0.4238
