@@ -1,28 +1,53 @@
-import re
+import json
 
-# Al estar ya en la carpeta BaseDeDatos, buscamos el archivo directamente por su nombre
-archivo_entrada = 'Base_Datos_MPS.json' 
-archivo_salida = 'Base_Datos_MPS_Limpia.json'
+# 1. Carga de los ficheros
+def load_json(filename):
+    with open(filename, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-with open(archivo_entrada, 'r', encoding='utf-8') as f:
-    texto = f.read()
+# Cargar archivos (asumiendo nombres de fichero)
+pn_data = load_json('PN.json')
+fin_data = load_json('datos_financieros_mps.json')['paises']
+balanza_data = load_json('balanza_sectorial.json')['paises']
+comercio_data = load_json('BaseDatos_Comercio.json')
 
-bloques = re.findall(r'"([A-Z]{3})":\s*({.*?})', texto, re.DOTALL)
+# 2. Diccionario de mapeo Nombre -> ISO
+# Nota: Necesitarás completar este diccionario con todos tus países
+mapping = {
+    "Albania": "ALB", "Austria": "AUT", "Botswana": "BWA", 
+    "Canada": "CAN", "China": "CHN", "Costa Rica": "CRI",
+    # ... añadir resto de países
+}
 
-if not bloques:
-    print("No se encontraron países. Asegúrate de que el archivo se llame exactamente 'Base_Datos_MPS.json'")
-else:
-    resultado = ["{"]
-    for i, (codigo, contenido) in enumerate(bloques):
-        # Limpiar decimales a 3 posiciones
-        contenido_limpio = re.sub(r'(\d+\.\d{3})\d+', r'\1', contenido)
-        
-        coma = "," if i < len(bloques) - 1 else ""
-        resultado.append(f'  "{codigo}": {contenido_limpio}{coma}')
-    
-    resultado.append("}")
+# 3. Estructura de normalización
+normalizado = {}
 
-    with open(archivo_salida, 'w', encoding='utf-8') as f:
-        f.write("\n".join(resultado))
+# Inicializar con la estructura de PN.json (la base maestra)
+for iso, años in pn_data.items():
+    if iso not in normalizado:
+        normalizado[iso] = {}
+    for año in años.keys():
+        normalizado[iso][año] = {"pn_valor": años[año]}
 
-    print(f"Éxito: Procesados {len(bloques)} países en '{archivo_salida}'.")
+# 4. Integrar datos de otros ficheros basándose en el ISO
+def integrar_datos(data_origen, tipo_datos, es_por_nombre=False):
+    for pais_key, años in data_origen.items():
+        iso = mapping.get(pais_key) if es_por_nombre else pais_key
+        if iso in normalizado:
+            for año, valores in años.items():
+                if año in normalizado[iso]:
+                    normalizado[iso][año][tipo_datos] = valores
+
+integrar_datos(fin_data, "financiero")
+integrar_datos(balanza_data, "sectorial")
+# BaseDatos_Comercio tiene estructura diferente, requiere ajuste fino:
+for nombre, años in comercio_data.items():
+    iso = mapping.get(nombre)
+    if iso in normalizado:
+        for año, vals in años.items():
+            if año in normalizado[iso]:
+                normalizado[iso][año]["comercio"] = vals
+
+# 5. Guardar resultado
+with open('data_normalizada.json', 'w') as f:
+    json.dump(normalizado, f, indent=4)
