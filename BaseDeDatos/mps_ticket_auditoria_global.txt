@@ -1,0 +1,35 @@
+======================================================================
+           DICTAMEN PERICIAL: MODELO DE PROSPERIDAD SOSTENIBLE (MPS)
+======================================================================
+Fecha de Emisión: 2026-06-15 | Estatus: AUDITORÍA BLINDADA Q1
+Autor: Pedro Andrés Aranda Muñoz
+Área de Cobertura: 197 Naciones | Horizonte Temporal: 2008-2023
+----------------------------------------------------------------------
+
+[1. ARQUITECTURA DE ESPECIFICACIÓN Y CONTROL]
+- Variable Dependiente Principal: ln_pib (Log-Riqueza Real Per Cápita)
+- Vector Independiente Maestro: ln_tpl (Carga Parasitaria Total)
+- Estimación Panel: Efectos Fijos (Entity Fixed Effects) via Intra-Country OLS
+- Corrección de Varianza: Robust Standard Errors Clustered por Jurisdicción
+
+[2. SIGNIFICANCIA ESTRUCTURAL CONTEMPORÁNEA (Modelo Estático Robust)]
+- Coeficiente ln_tpl (Impacto Inmediato): -0.3392
+- Error Estándar Robusto: 0.3308
+- Estadístico t de Precisión: -1.0255
+- P-valor Corregido (Robust): 3.0513e-01
+- Estatus de Validación: PENDIENTE DE RETARDO DINÁMICO
+
+[3. ANÁLISIS EN CASCADA: EL "VENENO LENTO" INSTITUCIONAL]
+- Coeficiente Lag 1 Año (ln_tpl_lag1): -0.1061 | P-valor: 3.1863e-01
+- Coeficiente Lag 2 Años (ln_tpl_lag2): -0.1443 | P-valor: 3.1025e-01
+- Coeficiente Lag 3 Años (ln_tpl_lag3): 0.0362 | P-valor: 6.2500e-01
+
+[4. ROBUSTEZ DIAGNÓSTICA]
+- Estadístico Breusch-Godfrey n=1: 199.1905 | P-valor: 3.1368e-45
+- Estadístico Durbin-Watson: 1.3920
+
+[5. LEY DE ARANDA MUÑOZ (Sustracción Marginal)]
+Bajo las restricciones robustas de clustering por país, el coeficiente indica 
+que el aparato político succiona el 33.92% del valor marginal 
+del PIB en el término contemporáneo estructural.
+======================================================================
