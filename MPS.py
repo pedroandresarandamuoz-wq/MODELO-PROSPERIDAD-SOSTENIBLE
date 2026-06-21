@@ -153,22 +153,12 @@ def fmt(x, dec=1):
 # -----------------------------------------------------------------------------
 #  Carga de datos
 # -----------------------------------------------------------------------------
-import os
-import json
-
-# Construimos la ruta absoluta de forma dinámica para que no falle en la nube
-DIRECTORIO_ACTUAL = os.path.dirname(os.path.abspath(__file__))
-BASE = os.path.join(DIRECTORIO_ACTUAL, "BaseDeDatos")
+BASE = "BaseDeDatos"
 
 def _json(filename):
     path = os.path.join(BASE, filename)
-    
     if not os.path.exists(path):
-        # MODO DEPURACIÓN: Si falla, te imprimirá en rojo la ruta exacta que está intentando leer
-        import streamlit as st
-        st.error(f"❌ Error de ruta: La máquina está ciega y no encuentra el archivo en: `{path}`")
         return {}
-        
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
